@@ -2,12 +2,15 @@
 
 module Api
   module V1
-    class SvgController < ApplicationController
+    class SvgController < ActionController::API
+      include ActionController::RequestForgeryProtection
 
       def convert_to_pdf
-
+        p params
+        head :unprocessable_content
       end
 
+      private
     end
   end
 end
