@@ -25,13 +25,13 @@ module SvgDocuments
         end
 
         pdf.svg svg_content,
-                at: [ pdf.bounds.left + margin, pdf.bounds.top - margin ],
-                width: pdf.bounds.width - 2 * margin,
-                height: pdf.bounds.height - 2 * margin
+                at: [ pdf.bounds.left + 2 * margin, pdf.bounds.top - 2 * margin ],
+                width: pdf.bounds.width - 4 * margin,
+                height: pdf.bounds.height - 4 * margin
 
         pdf.fill_color "cccccc"
         pdf.font_size 50
-        pdf.draw_text WATERMARK, at: [ 100, pdf.bounds.height / 2 ], rotate: 45
+        pdf.draw_text WATERMARK, at: [ 185, (pdf.bounds.height / 2) ], rotate: 45
       end
     end
   end

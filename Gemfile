@@ -46,8 +46,8 @@ gem "vite_rails"
 gem "prawn"
 gem "prawn-svg"
 gem "dotenv-rails"
-gem "rswag-api"
-gem "rswag-ui"
+gem "rswag-api", "~> 3.0.0.pre"
+gem "rswag-ui", "~> 3.0.0.pre"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -60,7 +60,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "rspec-rails"
-  gem "rswag-specs"
+  gem "rswag-specs", "~> 3.0.0.pre"
 end
 
 group :development do

@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
-import { Center, Container, FileButton, Button, Group, Text } from '@mantine/core';
+import { Loader, Center, Container, FileButton, Button, Group, Text } from '@mantine/core';
 import { IconUpload, IconDownload } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 
 export default function HomePage() {
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const resetRef = useRef(null);
   const clearFile = () => {
@@ -14,7 +15,6 @@ export default function HomePage() {
   };
 
   const showErrorNotification = (err) => {
-    console.log(err)
     notifications.show({
       color: 'red',
       title: ' Error',
@@ -25,6 +25,8 @@ export default function HomePage() {
   const handleUpload = async (selectedFile) => {
     setFile(selectedFile);
     if (!selectedFile) return;
+
+    setLoading(true)
 
     const formData = new FormData();
     formData.append('file', selectedFile); // Rails ожидает params[:file]
@@ -37,6 +39,7 @@ export default function HomePage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.log(errorData);
         showErrorNotification(errorData.error);
         throw new Error('Error during converting.');
       }
@@ -46,6 +49,8 @@ export default function HomePage() {
     } catch (err) {
       setFile(null);
       clearFile()
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -70,9 +75,14 @@ export default function HomePage() {
               {(props) => <Button {...props}>Upload SVG</Button>}
             </FileButton>
           </Group>
+          {loading && (
+            <Group justify="center" mt={20}>
+              <Loader color="blue" />
+            </Group>
+          )}
           {result && (
             <Group justify="center" mt={20}>
-              <Button onClick={handleDownload} leftSection={<IconDownload size={14} />}>Export PDF</Button>
+              <Button color="black" onClick={handleDownload} leftSection={<IconDownload size={14} />}>Export PDF</Button>
             </Group>
           )}
         </Container>

@@ -9,8 +9,8 @@ module SvgDocuments
     end
 
     def call
-      if uploaded_file.content_type != "image/svg+xml"
-        errors << "Provide only .svg files"
+      if uploaded_file.blank? || uploaded_file.content_type != "image/svg+xml"
+        errors << "Provide .svg file"
         return
       end
 
