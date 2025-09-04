@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Center, Container, FileButton, Button, Group, Text } from '@mantine/core';
-import { IconUpload } from '@tabler/icons-react';
+import { IconUpload, IconDownload } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 
 export default function HomePage() {
@@ -13,11 +13,12 @@ export default function HomePage() {
     (btn = resetRef.current) === null || btn === void 0 ? void 0 : btn.call(resetRef);
   };
 
-  const showErrorNotification = () => {
+  const showErrorNotification = (err) => {
+    console.log(err)
     notifications.show({
       color: 'red',
       title: ' Error',
-      message: 'Something went wrong',
+      message: err,
       position: 'top-center',
     })
   };
@@ -31,26 +32,30 @@ export default function HomePage() {
     try {
       const response = await fetch('/api/v1/convert_to_pdf', {
         method: 'POST',
-        body: formData,
-        headers: {
-          // Обычно CSRF-токен нужен для Rails, если это сессия
-          //'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content
-        },
+        body: formData
       });
 
-      if (!response.ok) throw new Error(`Ошибка: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        showErrorNotification(errorData.error);
+        throw new Error('Error during converting.');
+      }
 
-      // если сервер возвращает PDF как blob
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setResult(url);
-
+      const response_json = await response.json()
+      setResult(response_json)
     } catch (err) {
-      showErrorNotification();
       setFile(null);
       clearFile()
-    } finally {
     }
+  };
+
+  const handleDownload = () => {
+    if (!result?.pdf_url) return;
+
+    const link = document.createElement('a');
+    link.href = result.pdf_url;
+    link.download = result.pdf_name;
+    link.click();
   };
 
   return (
@@ -66,9 +71,9 @@ export default function HomePage() {
             </FileButton>
           </Group>
           {result && (
-            <Text size="sm" ta="center" mt="sm">
-              Picked file: {file.name}
-            </Text>
+            <Group justify="center" mt={20}>
+              <Button onClick={handleDownload} leftSection={<IconDownload size={14} />}>Export PDF</Button>
+            </Group>
           )}
         </Container>
       </Center>

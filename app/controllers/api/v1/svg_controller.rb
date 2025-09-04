@@ -3,14 +3,16 @@
 module Api
   module V1
     class SvgController < ActionController::API
-      include ActionController::RequestForgeryProtection
-
+      include ActiveStorage::SetCurrent
       def convert_to_pdf
-        p params
-        head :unprocessable_content
+        service = SvgDocuments::Create.new(params[:file])
+        service.call
+        if service.success?
+          render json: SvgDocumentBlueprint.render(service.resource)
+        else
+          render json: { error: service.errors }, status: :unprocessable_content
+        end
       end
-
-      private
     end
   end
 end
