@@ -5,7 +5,7 @@ module Api
     class SvgController < ActionController::API
       include ActiveStorage::SetCurrent
       def convert_to_pdf
-        service = SvgDocuments::Create.new(params[:file])
+        service = SvgDocuments::Create.new(params[:file], params[:ai_response])
         service.call
         if service.success?
           render json: SvgDocumentBlueprint.render(service.resource)

@@ -9,8 +9,7 @@ module SvgDocuments
     end
 
     def call
-      svg_file = svg.tempfile
-      svg_content = File.read(svg_file)
+      svg_content = svg.respond_to?(:tempfile) ? File.read(svg.tempfile) : svg
 
       Prawn::Document.new(page_size: "A4") do |pdf|
         margin = 28.35

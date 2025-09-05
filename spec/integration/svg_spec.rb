@@ -2,12 +2,17 @@ require 'openapi_helper'
 
 RSpec.describe 'api/v1/svg', type: :request do
   path '/api/v1/convert_to_pdf' do
+    let(:request_params) do
+      {
+        'file' => file
+      }
+    end
+
     post('convert_to_pdf svg') do
       tags 'SVG'
       consumes 'multipart/form-data'
       produces 'application/json'
-
-      parameter name: :file,
+      parameter name: 'file',
                 in: :formData,
                 required: true,
                 schema: {
@@ -17,9 +22,7 @@ RSpec.describe 'api/v1/svg', type: :request do
                 description: 'SVG file to convert'
 
       response(200, 'successful') do
-        let(:file) do
-          fixture_file_upload(Rails.root.join('spec/fixtures/files/example.svg'), 'image/svg+xml')
-        end
+        let(:file) { fixture_file_upload('example.svg', 'image/svg+xml') }
         run_test!
       end
 
