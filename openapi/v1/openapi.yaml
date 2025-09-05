@@ -28,8 +28,3 @@ paths:
               required:
               - file
         required: true
-servers:
-- url: http://{defaultHost}
-  variables:
-    defaultHost:
-      default: localhost:3000
